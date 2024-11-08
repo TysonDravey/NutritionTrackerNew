@@ -7,19 +7,15 @@ export const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: '#f5f5f5',
   },
-  
-  // Progress Bar Styles
-  progressBarContainer: {
-    height: 12,
-    marginVertical: 8,
-    borderRadius: 6,
-    overflow: 'hidden',
+  progressContainer: {
+    marginTop: 16,
+    marginBottom: 8,
   },
   progressTrack: {
-    width: '100%',
-    height: '100%',
+    height: 12,
     backgroundColor: '#E0E0E0',
     borderRadius: 6,
+    overflow: 'hidden',
     position: 'relative',
   },
   progressFill: {
@@ -29,17 +25,72 @@ export const styles = StyleSheet.create({
     height: '100%',
     borderRadius: 6,
   },
+  progressLabels: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 4,
+  },
+  progressText: {
+    fontSize: 12,
+    color: '#666',
+  },
+  overProgressText: {
+    color: '#FF5252',
+    fontSize: 12,
+    marginLeft: 8,
+  },
+  sectionCard: {
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  dayTotals: {
+    marginTop: 4,
+  },
+  totalValue: {
+    fontSize: 15,
+    marginVertical: 2,
+  },
+  expandedDay: {
+    marginTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#e0e0e0',
+    paddingTop: 12,
+  },
+  pastMeal: {
+    backgroundColor: '#f5f5f5',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 8,
+  },
+  mealDescription: {
+    fontSize: 16,
+    marginBottom: 4,
+  },
+  mealNutrition: {
+    marginLeft: 8,
+  },
+  mealTime: {
+    marginTop: 4,
+    opacity: 0.6,
+    fontSize: 12,
+  },
+  dayActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  // Progress Bar Styles
+  progressBarContainer: {
+    height: 12,
+    marginVertical: 8,
+    borderRadius: 6,
+    overflow: 'hidden',
+  },
   progressLabel: {
     fontSize: 16,
     fontWeight: '500',
     color: '#333',
     marginBottom: 4,
-  },
-  progressText: {
-    textAlign: 'center',
-    marginTop: 4,
-    fontSize: 12,
-    color: '#666',
   },
   
   // Card Styles
@@ -77,6 +128,10 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: 8,
+  },
+  closeDayButton: {
+    marginLeft: 16,
   },
   fastingHeader: {
     flexDirection: 'row',

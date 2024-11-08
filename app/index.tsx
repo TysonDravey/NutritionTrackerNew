@@ -441,10 +441,59 @@ export default function Index() {
       <ScrollView style={styles.mealsList}>
         {/* Current Day's Meals */}
         <Card style={styles.dayCard}>
-          <Card.Content>
-            <Title>Today's Meals</Title>
-          </Card.Content>
-        </Card>
+            <Card.Content>
+                <View style={styles.dayHeader}>
+                <Title>Today's Food</Title>
+                {currentMeals.length > 0 && (
+                    <Button 
+                    mode="contained" 
+                    onPress={() => {
+                        Alert.alert(
+                        "Close Today's Log",
+                        "Are you sure you want to close today's log? This will archive all current meals and start a new day.",
+                        [
+                            {
+                            text: "Cancel",
+                            style: "cancel"
+                            },
+                            {
+                            text: "Close Day",
+                            onPress: async () => {
+                                const dayTotal = currentMeals.reduce((acc, meal) => ({
+                                protein: acc.protein + meal.protein,
+                                netCarbs: acc.netCarbs + (meal.carbs - meal.fiber)
+                                }), { protein: 0, netCarbs: 0 });
+
+                                const newDayRecord = {
+                                id: Date.now().toString(),
+                                date: new Date().toDateString(),
+                                totalProtein: dayTotal.protein,
+                                totalNetCarbs: dayTotal.netCarbs,
+                                meals: currentMeals,
+                                isExpanded: false
+                                };
+
+                                const updatedPastDays = [newDayRecord, ...pastDays];
+                                setPastDays(updatedPastDays);
+                                setCurrentMeals([]);
+                                
+                                await AsyncStorage.setItem('pastDays', JSON.stringify(updatedPastDays));
+                                await AsyncStorage.setItem('currentMeals', JSON.stringify([]));
+                                updateDailyTotals([]);
+                            },
+                            style: "default"
+                            }
+                        ]
+                        );
+                    }}
+                    style={styles.closeDayButton}
+                    >
+                    Close Day
+                    </Button>
+                )}
+                </View>
+            </Card.Content>
+            </Card>
         
         {currentMeals.map((meal) => (
           <Card key={meal.id} style={styles.mealCard}>
@@ -484,6 +533,81 @@ export default function Index() {
             </Card.Content>
           </Card>
         ))}
+        {pastDays.length > 0 && (
+            <Card style={styles.sectionCard}>
+                <Card.Content>
+                <Title>Past Days</Title>
+                </Card.Content>
+            </Card>
+            )}
+
+            {pastDays.map((day) => (
+            <Card 
+                key={day.id} 
+                style={[
+                styles.dayCard,
+                { marginBottom: 8 }
+                ]}
+            >
+                <Card.Content>
+                <View style={styles.dayHeader}>
+                    <View style={{ flex: 1 }}>
+                    <Title>{new Date(day.date).toLocaleDateString('en-US', {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    })}</Title>
+                    <View style={styles.dayTotals}>
+                        <Paragraph style={[
+                        styles.totalValue,
+                        { color: day.totalProtein >= PROTEIN_GOAL ? '#4CAF50' : '#FF5252' }
+                        ]}>
+                        Protein: {day.totalProtein.toFixed(1)}g
+                        {day.totalProtein >= PROTEIN_GOAL && ' ✓'}
+                        </Paragraph>
+                        <Paragraph style={[
+                        styles.totalValue,
+                        { color: day.totalNetCarbs <= CARBS_GOAL ? '#4CAF50' : '#FF5252' }
+                        ]}>
+                        Net Carbs: {day.totalNetCarbs.toFixed(1)}g
+                        {day.totalNetCarbs <= CARBS_GOAL && ' ✓'}
+                        </Paragraph>
+                    </View>
+                    </View>
+                    <View style={styles.dayActions}>
+                    <IconButton 
+                        icon={day.isExpanded ? "chevron-up" : "chevron-down"}
+                        size={20}
+                        onPress={() => toggleDayExpand(day.id)}
+                    />
+                    </View>
+                </View>
+                
+                {day.isExpanded && (
+                    <View style={styles.expandedDay}>
+                    {day.meals.map((meal) => (
+                        <View key={meal.id} style={styles.pastMeal}>
+                        <Title style={styles.mealDescription}>{meal.description}</Title>
+                        <View style={styles.mealNutrition}>
+                            <Paragraph>Protein: {meal.protein}g</Paragraph>
+                            <Paragraph>Net Carbs: {(meal.carbs - meal.fiber)}g</Paragraph>
+                            <Paragraph>Fat: {meal.fat}g</Paragraph>
+                            <Paragraph>Fiber: {meal.fiber}g</Paragraph>
+                            <Paragraph style={styles.mealTime}>
+                            {new Date(meal.timestamp).toLocaleTimeString('en-US', {
+                                hour: 'numeric',
+                                minute: '2-digit'
+                            })}
+                            </Paragraph>
+                        </View>
+                        </View>
+                    ))}
+                    </View>
+                )}
+                </Card.Content>
+            </Card>
+            ))}
       </ScrollView>
   
       {/* Add Meal Dialog */}

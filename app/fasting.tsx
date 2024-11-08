@@ -241,77 +241,75 @@ export default function FastingScreen() {
       <Card style={[
         styles.fastingCard,
         currentFast?.type === 'fasting' ? styles.fastingCardFasting : styles.fastingCardEating
-      ]}>
+        ]}>
         <Card.Content>
-          <View style={styles.fastingHeader}>
+            <View style={styles.fastingHeader}>
             <Title>{currentFast?.type === 'fasting' ? 'Fasting Timer' : 'Eating Window'}</Title>
             <Switch
-              value={currentFast?.isActive ?? false}
-              onValueChange={toggleFasting}
+                value={currentFast?.isActive ?? false}
+                onValueChange={toggleFasting}
             />
-          </View>
-  
-          {currentFast?.isActive && (
+            </View>
+
+            {currentFast?.isActive && (
             <>
-              <View style={styles.timeInfo}>
+                <View style={styles.timeInfo}>
                 <Paragraph style={styles.timeLabel}>Started:</Paragraph>
                 <Paragraph style={styles.timeValue}>
-                  {new Date(currentFast.startTime).toLocaleString()}
+                    {new Date(currentFast.startTime).toLocaleString()}
                 </Paragraph>
                 <IconButton 
-                  icon="pencil" 
-                  size={20}
-                  onPress={() => {
+                    icon="pencil" 
+                    size={20}
+                    onPress={() => {
                     setDatePickerMode('start');
                     setTempDateTime(new Date(currentFast.startTime));
                     setShowDatePicker(true);
-                  }}
+                    }}
                 />
-              </View>
-  
-              <View style={styles.timeInfo}>
+                </View>
+
+                <View style={styles.timeInfo}>
                 <Paragraph style={styles.timeLabel}>Elapsed:</Paragraph>
                 <Paragraph style={styles.timeValue}>
-                  {formatDuration(elapsedTime)}
+                    {formatDuration(elapsedTime)}
                 </Paragraph>
-              </View>
-  
-              <View style={styles.timeInfo}>
+                </View>
+
+                <View style={styles.timeInfo}>
                 <Paragraph style={styles.timeLabel}>Target:</Paragraph>
                 <Paragraph style={styles.timeValue}>
-                  {currentFast.targetDuration} hours
+                    {currentFast.targetDuration} hours
                 </Paragraph>
-              </View>
-  
-              <View style={styles.timeInfo}>
+                </View>
+
+                <View style={styles.timeInfo}>
                 <Paragraph style={styles.timeLabel}>End Time:</Paragraph>
                 <Paragraph style={styles.timeValue}>
-                  {getEstimatedEndTime(currentFast.startTime, currentFast.targetDuration!).toLocaleString()}
+                    {getEstimatedEndTime(currentFast.startTime, currentFast.targetDuration!).toLocaleString()}
                 </Paragraph>
-              </View>
-  
-              {remainingTime !== null && (
-                <View style={styles.timeInfo}>
-                  <Paragraph style={styles.timeLabel}>Remaining:</Paragraph>
-                  <Paragraph style={styles.timeValue}>
-                    {formatDuration(remainingTime)}
-                  </Paragraph>
                 </View>
-              )}
-  
-            <View style={styles.progressContainer}>
-                <View style={styles.progressBar}>
-                    {/* Base progress up to 100% */}
+
+                {remainingTime !== null && (
+                <View style={styles.timeInfo}>
+                    <Paragraph style={styles.timeLabel}>Remaining:</Paragraph>
+                    <Paragraph style={styles.timeValue}>
+                    {formatDuration(remainingTime)}
+                    </Paragraph>
+                </View>
+                )}
+
+                <View style={styles.progressContainer}>
+                <View style={styles.progressTrack}>
                     <View 
                     style={[
                         styles.progressFill,
                         { 
                         width: `${Math.min((elapsedTime / (currentFast.targetDuration! * 3600000)) * 100, 100)}%`,
-                        backgroundColor: currentFast.type === 'fasting' ? '#2196F3' : '#2196F3'
+                        backgroundColor: '#2196F3'
                         }
                     ]} 
                     />
-                    {/* Excess indicator if over target */}
                     {elapsedTime > (currentFast.targetDuration! * 3600000) && (
                     <View 
                         style={[
@@ -320,7 +318,7 @@ export default function FastingScreen() {
                             position: 'absolute',
                             right: 0,
                             width: '20%',
-                            backgroundColor: '#FF5252',
+                            backgroundColor: currentFast.type === 'fasting' ? '#4CAF50' : '#FF5252',
                         }
                         ]} 
                     />
@@ -336,19 +334,19 @@ export default function FastingScreen() {
                     </Paragraph>
                     )}
                 </View>
-            </View>
-  
-              <Button 
+                </View>
+
+                <Button 
                 mode="contained" 
                 onPress={() => setShowTargetDialog(true)}
                 style={styles.targetButton}
-              >
+                >
                 Change Target Duration
-              </Button>
+                </Button>
             </>
-          )}
+            )}
         </Card.Content>
-      </Card>
+        </Card>
   
       {/* Past Periods List */}
       <ScrollView style={styles.fastList}>
